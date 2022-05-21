@@ -1,0 +1,12 @@
+version: '3'
+services:
+  app:
+    build:
+        dockerfile: ./Dockerfile
+        context: ./
+    tty: true
+    volumes:
+        - ./line_notify:/app/line_notify
+    working_dir: /app/line_notify
+    environment:
+      - PYTHONPATH=/app
