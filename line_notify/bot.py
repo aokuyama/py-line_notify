@@ -13,4 +13,10 @@ class LineBot:
         self._api = LineBotApi(access_token)
 
     def send(self, notice: Notice):
-        self._api.push_message(notice.getTo(), TextSendMessage(text=notice.getMsg()))
+        msg = {
+            "text": notice.getMsg()
+        }
+        emojis = notice.getEmojis()
+        if len(emojis):
+            msg['emojis'] = emojis
+        self._api.push_message(notice.getTo(), TextSendMessage(**msg))

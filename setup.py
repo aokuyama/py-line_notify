@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="line_notify",
-    version="0.1.0",
+    version="0.1.1",
     author="aokuyama",
     author_email="mail@aokuyama.work",
     description="line common notify",
