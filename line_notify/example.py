@@ -1,10 +1,10 @@
-import os
-from linebot import LineBotApi
-from linebot.models import TextSendMessage
+import json
+from line_notify.aws_sns import subscribe
 
-channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN')
-group_id = os.getenv('LINE_GROUP_ID')
+
+title = ''
 msg = 'Hello World!'
 
-line_bot_api = LineBotApi(channel_access_token)
-line_bot_api.push_message(group_id, TextSendMessage(text=msg))
+event = '{"Records":[{"EventSource":"aws:sns","EventVersion":"1.0","EventSubscriptionArn":"arn:aws:sns:xxxx","Sns":{"Type":"Notification","MessageId":"xxxx","TopicArn":"arn:aws:sns:xxxx","Subject":"' + title + '","Message":"' + msg + \
+    '","Timestamp":"2022-03-05T22:57:07.775Z","SignatureVersion":"1","Signature":"xxx","SigningCertUrl":"https:/example.com","UnsubscribeUrl":"https:/example.com","MessageAttributes":{"level":{"Type":"String","Value":"alert"}}}}]}'
+notices = subscribe(json.loads(event))

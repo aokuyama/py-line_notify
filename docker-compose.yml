@@ -11,4 +11,4 @@ services:
     environment:
       - PYTHONPATH=/app
       - LINE_CHANNEL_ACCESS_TOKEN=${LINE_CHANNEL_ACCESS_TOKEN}
-      - LINE_GROUP_ID=${LINE_GROUP_ID}
+      - LINE_TO_DEFAULT=${LINE_TO_DEFAULT}
