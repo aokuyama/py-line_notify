@@ -58,6 +58,9 @@ class Notice:
 
         return emojis
 
+    def is_broadcast(self) -> bool:
+        return self.getTo() == "broadcast"
+
 
 if __name__ == '__main__':
     import unittest
@@ -107,5 +110,13 @@ if __name__ == '__main__':
             }
             self.assertEqual(e, self.s.getEmojis()[1])
             self.assertEqual(2, len(self.s.getEmojis()))
+
+        def test_(self):
+            self.s.set(**{"to": "broadcast"})
+            self.assertTrue(self.s.is_broadcast())
+            self.s.set(**{"to": "aaaaaaaa"})
+            self.assertFalse(self.s.is_broadcast())
+            self.s.set(**{"to": None})
+            self.assertFalse(self.s.is_broadcast())
 
     unittest.main()

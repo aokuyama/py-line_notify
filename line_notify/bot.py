@@ -19,4 +19,9 @@ class LineBot:
         emojis = notice.getEmojis()
         if len(emojis):
             msg['emojis'] = emojis
-        self._api.push_message(notice.getTo(), TextSendMessage(**msg))
+
+        tsm = TextSendMessage(**msg)
+        if notice.is_broadcast():
+            self._api.broadcast(tsm)
+        else:
+            self._api.push_message(notice.getTo(), tsm)
