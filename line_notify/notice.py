@@ -6,10 +6,11 @@ class Notice:
     def __init__(self, content={}) -> None:
         self.set(**content)
 
-    def set(self, to=None, title=None, text=None):
+    def set(self, to=None, title=None, text=None, reply_token=None):
         self.to = to
         self.title = title
         self.text = text
+        self.reply_token = reply_token
         return self
 
     def getMsg(self) -> str:
@@ -58,9 +59,14 @@ class Notice:
 
         return emojis
 
-    def is_broadcast(self) -> bool:
+    def isBroadcast(self) -> bool:
         return self.getTo() == "broadcast"
 
+    def getReplyToken(self) -> str:
+        return self.reply_token
+
+    def isReply(self) -> bool:
+        return bool(self.getReplyToken())
 
 if __name__ == '__main__':
     import unittest
@@ -111,12 +117,19 @@ if __name__ == '__main__':
             self.assertEqual(e, self.s.getEmojis()[1])
             self.assertEqual(2, len(self.s.getEmojis()))
 
-        def test_(self):
+        def test_mode(self):
             self.s.set(**{"to": "broadcast"})
-            self.assertTrue(self.s.is_broadcast())
+            self.assertTrue(self.s.isBroadcast())
             self.s.set(**{"to": "aaaaaaaa"})
-            self.assertFalse(self.s.is_broadcast())
+            self.assertFalse(self.s.isBroadcast())
             self.s.set(**{"to": None})
-            self.assertFalse(self.s.is_broadcast())
+            self.assertFalse(self.s.isBroadcast())
 
+        def test_reply_mode(self):
+            self.s.set(**{"reply_token": "aaaaaa"})
+            self.assertTrue(self.s.isReply())
+            self.s.set(**{"reply_token": None})
+            self.assertFalse(self.s.isReply())
+            self.s.set(**{"reply_token": ""})
+            self.assertFalse(self.s.isBroadcast())
     unittest.main()

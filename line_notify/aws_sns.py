@@ -28,6 +28,8 @@ def by_record(record):
         attr = sns['MessageAttributes']
         if 'to' in attr:
             con['to'] = attr['to']['Value']
+        if 'reply_token' in attr:
+            con['reply_token'] = attr['reply_token']['Value']
     return Notice(con)
 
 
@@ -40,13 +42,15 @@ if __name__ == '__main__':
             pass
 
         def test_init_by_records(self):
-            event = '{"Records":[{"EventSource":"aws:sns","EventVersion":"1.0","EventSubscriptionArn":"arn:aws:sns:xxxx","Sns":{"Type":"Notification","MessageId":"xxxx","TopicArn":"arn:aws:sns:xxxx","Subject":"subjectbysns","Message":"msgbysns","Timestamp":"2022-03-05T22:57:07.775Z","SignatureVersion":"1","Signature":"xxx","SigningCertUrl":"https:/example.com","UnsubscribeUrl":"https:/example.com","MessageAttributes":{"level":{"Type":"String","Value":"alert"}}}},{"EventSource":"aws:sns","EventVersion":"1.0","EventSubscriptionArn":"arn:aws:sns:xxxx","Sns":{"Type":"Notification","MessageId":"xxxx","TopicArn":"arn:aws:sns:xxxx","Subject":"subjectbysns2","Message":"msgbysns2","Timestamp":"2022-03-05T22:57:07.775Z","SignatureVersion":"1","Signature":"xxx","SigningCertUrl":"https:/example.com","UnsubscribeUrl":"https:/example.com","MessageAttributes":{"to":{"Type":"String","Value":"abcdefg"}}}}]}'
+            event = '{"Records":[{"EventSource":"aws:sns","EventVersion":"1.0","EventSubscriptionArn":"arn:aws:sns:xxxx","Sns":{"Type":"Notification","MessageId":"xxxx","TopicArn":"arn:aws:sns:xxxx","Subject":"subjectbysns","Message":"msgbysns","Timestamp":"2022-03-05T22:57:07.775Z","SignatureVersion":"1","Signature":"xxx","SigningCertUrl":"https:/example.com","UnsubscribeUrl":"https:/example.com","MessageAttributes":{"reply_token":{"Type":"String","Value":"tokenaaa"},"level":{"Type":"String","Value":"alert"}}}},{"EventSource":"aws:sns","EventVersion":"1.0","EventSubscriptionArn":"arn:aws:sns:xxxx","Sns":{"Type":"Notification","MessageId":"xxxx","TopicArn":"arn:aws:sns:xxxx","Subject":"subjectbysns2","Message":"msgbysns2","Timestamp":"2022-03-05T22:57:07.775Z","SignatureVersion":"1","Signature":"xxx","SigningCertUrl":"https:/example.com","UnsubscribeUrl":"https:/example.com","MessageAttributes":{"to":{"Type":"String","Value":"abcdefg"}}}}]}'
             notices = by_event(json.loads(event))
             self.assertEqual(2, len(notices))
             self.assertEqual('subjectbysns', notices[0].title)
             self.assertEqual('msgbysns', notices[0].text)
             self.assertIsNone(notices[0].to)
+            self.assertEqual('tokenaaa', notices[0].reply_token)
             self.assertEqual('subjectbysns2', notices[1].title)
             self.assertEqual('msgbysns2', notices[1].text)
             self.assertEqual('abcdefg', notices[1].to)
+            self.assertIsNone(notices[1].reply_token)
     unittest.main()
