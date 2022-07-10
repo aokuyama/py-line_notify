@@ -1,6 +1,6 @@
 from os import getenv
 import re
-
+from typing import Optional
 
 class Notice:
     def __init__(self, content={}) -> None:
@@ -30,7 +30,9 @@ class Notice:
             return var
         return str(var)
 
-    def getTo(self) -> str:
+    def getTo(self) -> Optional[str]:
+        if self.isReply():
+            return None
         if self.to:
             return self.to
         return getenv('LINE_TO_DEFAULT')
@@ -67,6 +69,7 @@ class Notice:
 
     def isReply(self) -> bool:
         return bool(self.getReplyToken())
+
 
 if __name__ == '__main__':
     import unittest
@@ -132,4 +135,14 @@ if __name__ == '__main__':
             self.assertFalse(self.s.isReply())
             self.s.set(**{"reply_token": ""})
             self.assertFalse(self.s.isBroadcast())
+
+        def test_reply_is_prioritized(self):
+            self.s.set(**{"reply_token": "aaaaaa", "to": "broadcast"})
+            self.assertTrue(self.s.isReply())
+            self.assertFalse(self.s.isBroadcast())
+            self.assertIsNone(self.s.getTo())
+            self.s.set(**{"reply_token": "aaaaaa", "to": "bbbbb"})
+            self.assertTrue(self.s.isReply())
+            self.assertFalse(self.s.isBroadcast())
+            self.assertIsNone(self.s.getTo())
     unittest.main()

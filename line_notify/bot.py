@@ -22,8 +22,8 @@ class LineBot:
 
         tsm = TextSendMessage(**msg)
         if notice.isReply():
-            self._api.reply_message(notice.getReplyToken(), TextSendMessage(text='Hello World!'))
-        if notice.isBroadcast():
+            self._api.reply_message(notice.getReplyToken(), tsm)
+        elif notice.isBroadcast():
             self._api.broadcast(tsm)
         else:
             self._api.push_message(notice.getTo(), tsm)
